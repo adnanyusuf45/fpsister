@@ -6,96 +6,58 @@ import Pyro4
 
 
 def sendcommand(result):
-        
-	if (result[0] == "mv"):
-            
-		print ("testA")
-			
-		if (len(result)==3):				
-			print (len(result))
-			
-		else:
-				
-			print ("Wrong command!")
-				
-			print ("The correct command is : mv /source / destination")
-        
-	elif (result[0] == "ls"):
-            
-		print ("testB")
-			
-		if (len(result)==2):
-				
-			print (len(result))
-			
-		else:
-				
-			print ("Wrong command!")
-				
-			print ("The correct command is : ls")			
-        
-	elif (result[0] == "rm"):
-            
-		print ("testC")
-			
-		if (len(result)==2):
-				
-			print (len(result))
-			
-		else:
-				
-			print ("Wrong command!")
-				
-			print ("The correct command is : rm filename")
-        
-	elif (result[0] == "cp"):
-            
-		print ("testD")
-			
-		if (len(result)==3):
-				
-			print (len(result))
-			
-		else:
-				
-			print ("Wrong command!")
-				
-			print ("The correct command is : cp /source /destination")
-        
-	elif (result[0] == "cd"):
-            
-		print ("testE")
-			
-		if (len(result)==2):
-				
-			print (len(result))
-			
-		else:
-				
-			print ("Wrong command!")
-				
-			print ("The correct command is : cd /directory")
-        
-	elif (result[0] == "touch"):
-            
-		print ("testF")
-			
-		if (len(result)==2):
-				
-			print (len(result))
-			
-		else:
-				
-			print ("Wrong command!")
-				
-			print ("The correct command is : touch /file")
-		
-	else:
-			
-		print ("Command tidak terdaftar")
-			
-		perintah = input("Enter your command: ")
-
+        if (result[0] == "mv"):
+            if(len(result)== 3):
+                print ("testA \n")
+                src = result[1]
+                dst = result[2]
+                main()
+            else:    
+                print("wrong command \n")
+                print("the correct command is mv /source /destination \n")
+                main()
+        elif (result[0] == "ls"):
+            print ("testB")
+        elif (result[0] == "rm"):
+            if(len(result)== 2):
+                print ("testC \n")
+                direc = result[1]
+                main()
+            else:    
+                print("wrong command \n")
+                print("the correct command is rm filename \n")
+                main()
+        elif (result[0] == "cp"):
+            if(len(result)== 3):
+                print ("testD \n")
+                src = result[1]
+                dst = result[2]
+                main()
+            else:    
+                print("wrong command \n")
+                print("the correct command is cp /source /destination \n")
+                main()
+        elif (result[0] == "cd"):
+            if(len(result)== 2):
+                print ("testE \n")
+                direc = result[1]
+                main()
+            else:    
+                print("wrong command \n")
+                print("the correct command is cd /directory \n")
+                main()
+        elif (result[0] == "touch"):
+            if(len(result)== 2):
+                print ("testF \n")
+                direc = result[1]
+                main()
+            else:    
+                print("wrong command \n")
+                print("the correct command is touch /file  \n")
+                main()    
+        else:
+            print ("Pilihan Salah")
+            main()
 
 
 def main():
@@ -116,7 +78,7 @@ def main():
 	print("touch /file")
 
 	print("--End Command List--")	
-	perintah = input("Enter your command:")
+	perintah = raw_input("Enter your command:")
 	
 	result = perintah.split(" ")
 	
