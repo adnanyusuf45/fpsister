@@ -9,10 +9,10 @@ import Pyro4
 from Pyro4.util import SerializerBase
 
 state = "E:/"
-host = "10.151.44.138"
-port= "8080"
+host = "192.168.88.253"
+port_pyro= 9090
 pyroname="machine1"
-server = Pyro4.core.Proxy("PYRONAME:server@10.151.44.110:60345")
+server = Pyro4.core.Proxy("PYRO:example.dc.dispatcher@192.168.88.252:9096")
 
 @Pyro4.expose
 class Machine(object):
@@ -46,7 +46,12 @@ class Machine(object):
         #file.write(getData("E:/logs.txt"))
 
     def __init__(self):
-        print(self.getPyroname())
+
+        val=self.pyro()
+        print(val)
+        server.getPyroname(val)
+        #print(val[0]['path'])
+        #print(self.pyro())
 
     def touch(file):
         open(state+file,'a').close()
@@ -73,17 +78,20 @@ class Machine(object):
         sentfile = file.read()
         return sentfile
 
-    def getPyroname(self):
+    def pyro(self):
         #server.setUri(pyroname+"@"+host+":"+port)
-        return pyroname+"@"+host+":"+port
+        val = ({"machine":pyroname+"@"+host+":"+str(port_pyro),"path":state})
+        return val
+        #return pyroname+"@"+host+":"+port
 
 if __name__ == "__main__":
     Pyro4.config.HOST = host
+    #Pyro4.config.PORT = port
     #Pyro4.config.SERVERTYPE = "thread"
     Pyro4.Daemon.serveSimple(
         {
             Machine(): pyroname
-        }, verbose=True, ns=False
+        }, verbose=True, ns=False, port=port_pyro
     )
     #getPyroname()
 
