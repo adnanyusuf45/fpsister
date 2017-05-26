@@ -6,12 +6,6 @@ listFolder = []
 
 listMachine = []
 
-all_counters = ['PYRO:example.dc.wordcount.1@10.151.37.126:53349',
-'PYRO:example.dc.wordcount.2@10.151.37.126:53349',
-'PYRO:example.dc.wordcount.3@10.151.37.126:53349',
-'PYRO:example.dc.wordcount.4@10.151.37.126:53349',
-'PYRO:example.dc.wordcount.5@10.151.37.126:53349']
-
 @Pyro4.expose
 class Dispatcher(object):
 	
@@ -19,7 +13,7 @@ class Dispatcher(object):
 		listFolder.append(newFolder)
 		
 	def getFolder(path):
-        	counters = [Pyro4.Proxy(uri) for uri in all_counters]
+        	#counters = [Pyro4.Proxy(uri) for uri in all_counters]
 
 	def getPyroname(gaTauApa,name):
 		listMachine.append(name)
@@ -83,28 +77,3 @@ if __name__ == "__main__":
 			Dispatcher:    "example.dc.dispatcher"
 		}, verbose=True, ns=False, port=9096
 	)
-		
-	def copyFile(source, dest):
-		worker = Pyro4.core.proxy()
-		worker.cp(source,dest)
-		
-	def moveFile(source,dest):
-		worker = Pyro4.core.proxy()
-		worker.mv(source,dest)
-		
-	def changeDir(path):
-	
-	def touchFile(path):
-		worker = Pyro4.core.proxy()
-		worker.touch(path)
-	
-	
-if __name__ == "__main__":
-print("Spinning up  dispatcher.")
-Pyro4.config.HOST = '10.151.37.126'
-Pyro4.config.SERVERTYPE = "thread"
-Pyro4.Daemon.serveSimple(
-	{
-		Dispatcher:    "example.dc.dispatcher"
-	}, verbose=True, ns=False
-)
