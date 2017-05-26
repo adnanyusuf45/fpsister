@@ -5,6 +5,8 @@ from collections import Counter
 import Pyro4
 import sys
 
+server = Pyro4.core.Proxy("PYRO:example.dc.dispatcher@localhost:9096")
+
 def sendcommand(result):
         if (result[0] == "mv"):
             if(len(result)== 3):
@@ -17,7 +19,8 @@ def sendcommand(result):
                 print("the correct command is mv /source /destination \n")
                 main()
         elif (result[0] == "ls"):
-            print ("testB")
+            #print ("testB")
+            print(server.getFolder())
             main()
         elif (result[0] == "rm"):
             if(len(result)== 2):

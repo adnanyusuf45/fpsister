@@ -1,7 +1,7 @@
 import sys
 import Pyro4
 
-path = "..";
+path = ".."
 listFolder = []
 
 listMachine = []
@@ -12,7 +12,12 @@ class Dispatcher(object):
 	def setFolder(newFolder):
 		listFolder.append(newFolder)
 		
-	def getFolder(path):
+	def getFolder(self):
+            ls=[]
+            counter=0
+            for item in listMachine:
+                ls.append(item)
+            return ls
         	#counters = [Pyro4.Proxy(uri) for uri in all_counters]
 
 	def getPyroname(gaTauApa,name):
@@ -32,14 +37,14 @@ class Dispatcher(object):
 	def setPath(newPath):
 		path = newPath;
 		
-	def listFile(path):
+	def listFile(pat):
 		#path = listMachine['machine']
-		worker = Pyro4.core.proxy()
+		#worker = Pyro4.core.proxy()
 		#worker.ls(path);
 		if(path == ".."):
 			return self.getFolder()
 		else:
-			return worker.getFile();
+			return worker.getFile()
 			
 	def removeFile(path):
 		worker = Pyro4.core.proxy()
@@ -70,7 +75,7 @@ class Dispatcher(object):
 	
 if __name__ == "__main__":
 	print("Spinning up  dispatcher.")
-	Pyro4.config.HOST = '192.168.88.252'
+	Pyro4.config.HOST = 'localhost'
 	Pyro4.config.SERVERTYPE = "thread"
 	Pyro4.Daemon.serveSimple(
 		{
