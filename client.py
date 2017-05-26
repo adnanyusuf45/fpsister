@@ -3,13 +3,7 @@ import zipfile
 import time
 from collections import Counter
 import Pyro4
-
 import sys
-
-import Pyro4
-
-
-
 
 def sendcommand(result):
         if (result[0] == "mv"):
@@ -24,6 +18,7 @@ def sendcommand(result):
                 main()
         elif (result[0] == "ls"):
             print ("testB")
+            main()
         elif (result[0] == "rm"):
             if(len(result)== 2):
                 print ("testC \n")
@@ -65,38 +60,21 @@ def sendcommand(result):
             print ("Pilihan Salah")
             main()
 
-
 def main():
-	
 	print("=====================================================")
 	print("Welcome to 2Global Filesystem")
-	
 	print("--Command List--")
-	
 	print("mv /source /destination")
-	
 	print("rm filename")
-	
 	print("cp /source /destination")
-	
 	print("cd /directory")
-	
 	print("touch /file")
-
 	print("--End Command List--")	
-	perintah = raw_input("Enter your command:")
-	
+	perintah = input("Enter your command:")
 	result = perintah.split(" ")
-	
 	sendcommand(result)
-	
-
 	#with Pyro4.core.Proxy(PYRO) as dispatcher:
-        
 		#    dispatcher.load()
-        
-
 
 if __name__ == "__main__":
-    
 	main()
