@@ -9,10 +9,10 @@ import Pyro4
 from Pyro4.util import SerializerBase
 
 state = "E:/"
-host = "192.168.88.253"
+host = "10.151.62.36"
 port_pyro= 9090
-pyroname="machine1"
-server = Pyro4.core.Proxy("PYRO:example.dc.dispatcher@192.168.88.252:9096")
+pyroname="machine2"
+server = Pyro4.core.Proxy("PYRO:example.dc.dispatcher@10.151.62.36:9096")
 
 @Pyro4.expose
 class Machine(object):

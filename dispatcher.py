@@ -16,7 +16,8 @@ class Dispatcher(object):
             ls=[]
             counter=0
             for item in listMachine:
-                ls.append(item)
+                temp = item['machine'].split('@')
+                ls.append(temp[0])
             return ls
         	#counters = [Pyro4.Proxy(uri) for uri in all_counters]
 
@@ -75,7 +76,7 @@ class Dispatcher(object):
 	
 if __name__ == "__main__":
 	print("Spinning up  dispatcher.")
-	Pyro4.config.HOST = 'localhost'
+	Pyro4.config.HOST = '10.151.62.36'
 	Pyro4.config.SERVERTYPE = "thread"
 	Pyro4.Daemon.serveSimple(
 		{

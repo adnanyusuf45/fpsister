@@ -5,7 +5,7 @@ from collections import Counter
 import Pyro4
 import sys
 
-server = Pyro4.core.Proxy("PYRO:example.dc.dispatcher@localhost:9096")
+server = Pyro4.core.Proxy("PYRO:example.dc.dispatcher@10.151.62.36:9096")
 
 def sendcommand(result):
         if (result[0] == "mv"):
@@ -20,7 +20,9 @@ def sendcommand(result):
                 main()
         elif (result[0] == "ls"):
             #print ("testB")
-            print(server.getFolder())
+            for item in server.getFolder():
+                print(item)
+            ##print(server.getFolder())
             main()
         elif (result[0] == "rm"):
             if(len(result)== 2):
@@ -64,15 +66,15 @@ def sendcommand(result):
             main()
 
 def main():
-	print("=====================================================")
-	print("Welcome to 2Global Filesystem")
-	print("--Command List--")
-	print("mv /source /destination")
-	print("rm filename")
-	print("cp /source /destination")
-	print("cd /directory")
-	print("touch /file")
-	print("--End Command List--")	
+	#print("=====================================================")
+	#print("Welcome to 2Global Filesystem")
+	#print("--Command List--")
+	#print("mv /source /destination")
+	#print("rm filename")
+	#print("cp /source /destination")
+	#print("cd /directory")
+	#print("touch /file")
+	#print("--End Command List--")
 	perintah = input("Enter your command:")
 	result = perintah.split(" ")
 	sendcommand(result)
