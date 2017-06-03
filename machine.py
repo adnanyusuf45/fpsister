@@ -59,7 +59,7 @@ class Machine(object):
     def rm(file):
         os.remove(file)
 
-    def getList(state):
+    def getList(self,state):
         #mypath = "E:/"
         #ls = []
         onlyfiles = [f for f in listdir(state) if isfile(join(state,f)) ]

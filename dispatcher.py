@@ -2,8 +2,8 @@ import sys
 import Pyro4
 
 path = ".."
-listFolder = []
-
+machine = ""
+listFile = []
 listMachine = []
 
 @Pyro4.expose
@@ -14,16 +14,24 @@ class Dispatcher(object):
 		
 	def getFolder(self):
             ls=[]
+            global path
+            global listMachine
+            global listFile
             counter=0
-            for item in listMachine:
-                temp = item['machine'].split('@')
-                ls.append(temp[0])
+            if path=="..":
+                #list=listMachine
+                for item in listMachine:
+                    temp = item['machine'].split('@')
+                    ls.append(temp[0])
+            else:
+                ls=listFile
+
             return ls
         	#counters = [Pyro4.Proxy(uri) for uri in all_counters]
 
-	def getPyroname(gaTauApa,name):
+	def getPyroname(self,name):
 		listMachine.append(name)
-		print(listMachine[0]['machine'])		
+		print(name['machine'])
 	
 	def getMachine(name):
 		for i in len(listMachine):
@@ -31,21 +39,19 @@ class Dispatcher(object):
 				return	val[i]['machine']
 			else:
 				return "error"
-	def getPath():
-		path = listMachine['machine']
-		return path;
+	def getPath(self):
+		global path
+		return path
 		
-	def setPath(newPath):
-		path = newPath;
-		
-	def listFile(pat):
+	def listFile(self):
 		#path = listMachine['machine']
 		#worker = Pyro4.core.proxy()
 		#worker.ls(path);
+		global path
 		if(path == ".."):
 			return self.getFolder()
 		else:
-			return worker.getFile()
+			return machine.getFile()
 			
 	def removeFile(path):
 		worker = Pyro4.core.proxy()
@@ -60,8 +66,28 @@ class Dispatcher(object):
 		worker = Pyro4.core.proxy()
 		worker.mv(source,dest)
 		
-	def changeDir(newPath):
-		self.setPath(newPath)
+	def changeDir(self,newPath):
+		global path
+		global machine
+		global listFile
+		if (newPath==".."):
+		    path=".."
+		    return path
+		bool=False
+		if path=="..":
+		    for item in listMachine:
+		        temp=item['machine'].split('@')
+		        if (temp[0]==newPath):
+		            bool=True
+		            machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+		            listFile=machine.getList(item['path'])
+		            break
+		if bool:
+		    path+="/"+newPath
+		    return path
+		else:
+		    return False
+
 
 	def touchFile(path):
 		#dirc = getPath()
