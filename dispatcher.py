@@ -2,7 +2,7 @@ import sys
 import Pyro4
 
 path = ".."
-machine = ""
+#machine = ""
 listFile = []
 listMachine = []
 
@@ -19,7 +19,6 @@ class Dispatcher(object):
             global listFile
             counter=0
             if path=="..":
-                #list=listMachine
                 for item in listMachine:
                     temp = item['machine'].split('@')
                     ls.append(temp[0])
@@ -27,7 +26,6 @@ class Dispatcher(object):
                 ls=listFile
 
             return ls
-        	#counters = [Pyro4.Proxy(uri) for uri in all_counters]
 
 	def getPyroname(self,name):
 		listMachine.append(name)
@@ -44,31 +42,114 @@ class Dispatcher(object):
 		return path
 		
 	def listFile(self):
-		#path = listMachine['machine']
-		#worker = Pyro4.core.proxy()
-		#worker.ls(path);
-		global path
+		#global path
 		if(path == ".."):
 			return self.getFolder()
 		else:
-			return machine.getFile()
+			for item in listMachine:
+				temp=item['machine'].split('@')
+				path_folder = path.split("/")
+		        	if (temp[0]==path_folder[len(path_folder)-1]):
+		            		bool=True
+			    		machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+					return machine.getList()
 			
-	def removeFile(path):
-		worker = Pyro4.core.proxy()
-		worker.rm(path)
-		
-	def copyFile(source, dest):
-		#worker_pyro = 
-		worker = Pyro4.core.proxy()
-		worker.cp(source,dest)
-		
-	def moveFile(source,dest):
-		worker = Pyro4.core.proxy()
-		worker.mv(source,dest)
+	def removeFile(self, file_path):
+		if(path == ".."):
+			file_split = file_path.split("/")
+			print(len(file_split))
+			if(len(file_split)>1):
+				for item in listMachine: 
+					temp = item['machine'].split('@')
+					if(temp[0]==file_split[0]):
+						machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+						machine.rm(file_split[1])
+						return file_split[1] + " berhasil dihapus"
+			else: 									
+				return "Can't remove in this folder"
+		else:
+			for item in listMachine:
+				temp=item['machine'].split('@')
+				path_folder = path.split("/")
+		        	if (temp[0]==path_folder[len(path_folder)-1]):
+		            		bool=True
+			    		machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+					machine.rm(file_path)
+					return file_path + " berhasil dihapus"
+	def sendData(self,sentdata, dest):
+		file_split = dest.split("/")
+		print(file_split[1])
+		if(len(file_split)>2):
+			for item in listMachine:
+				temp = item['machine'].split('@')
+				if(temp[0]==file_split[1]):
+					machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+					machine.save(sentdata,file_split[2])
+		elif(len(file_split)>1):
+			for item in listMachine:
+				temp = item['machine'].split('@')
+				if(temp[0]==file_split[0]):
+					machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+					machine.save(sentdata,file_split[1])
+					#return true
+		#else:
+			#return false
+			
+
+	def copyFile(self,source, dest):
+		if(path == ".."):
+			file_split = source.split("/")
+			print(len(file_split))
+			if(len(file_split)>1):
+				for item in listMachine: 
+					temp = item['machine'].split('@')
+					if(temp[0]==file_split[0]):
+						machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+						sentdata = machine.getData(file_split[1])
+						self.sendData(sentdata, dest)
+						#return file_split[1] + " berhasil dihapus"
+			else: 									
+				return "Can't copy"
+		else:
+			for item in listMachine:
+				temp=item['machine'].split('@')
+				path_folder = path.split("/")
+		        	if (temp[0]==path_folder[len(path_folder)-1]):
+			    		machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+					#source_new = source.split("/")
+					print(dest)
+					source_new = source.split("/")
+					sentdata = machine.getData(source_new[len(path_folder)-1])
+					self.sendData(sentdata, dest)
+					
+
+	def moveFile(self,source,dest):
+		if(path == ".."):
+			file_split = source.split("/")
+			print(len(file_split))
+			if(len(file_split)>1):
+				for item in listMachine: 
+					temp = item['machine'].split('@')
+					if(temp[0]==file_split[0]):
+						machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+						sentdata = machine.getData(file_split[1])
+						machine.rm(file_split[1])
+						self.sendData(sentdata, dest)
+			else: 									
+				return "Can't copy"
+		else:
+			for item in listMachine:
+				temp=item['machine'].split('@')
+				path_folder = path.split("/")
+		        	if (temp[0]==path_folder[len(path_folder)-1]):
+			    		machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+					source_new = source.split("/")
+					machine.rm(source_new[len(path_folder)-1])
+					sentdata = machine.getData(source_new[len(path_folder)-1])
+					self.sendData(sentdata, dest)
 		
 	def changeDir(self,newPath):
 		global path
-		global machine
 		global listFile
 		if (newPath==".."):
 		    path=".."
@@ -79,8 +160,6 @@ class Dispatcher(object):
 		        temp=item['machine'].split('@')
 		        if (temp[0]==newPath):
 		            bool=True
-		            machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
-		            listFile=machine.getList(item['path'])
 		            break
 		if bool:
 		    path+="/"+newPath
@@ -89,20 +168,32 @@ class Dispatcher(object):
 		    return False
 
 
-	def touchFile(path):
-		#dirc = getPath()
-		#worker = Pyro4.core.proxy(getPyronname()
-		#if(dirc==".."):
-		#	worker.touchFile
-		#else:
-		#	touchFile
-		worker = Pyro4.core.proxy()
-		worker.touch(path)
+	def touchFile(self, file_path):
+		if(path == ".."):
+			file_split = file_path.split("/")
+			print(len(file_split))
+			if(len(file_split)>1):
+				for item in listMachine: 
+					temp = item['machine'].split('@')
+					if(temp[0]==file_split[0]):
+						machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+						machine.touch(file_split[1])
+						return file_split[1] + " berhasil dibuat"
+			else: 									
+				return "Can't touch in this folder"
+		else:
+			for item in listMachine:
+				temp=item['machine'].split('@')
+				path_folder = path.split("/")
+		        	if (temp[0]==path_folder[len(path_folder)-1]):
+			    		machine=Pyro4.core.Proxy("PYRO:"+item['machine'])
+					machine.touch(file_path)
+					return file_path + " berhasil dibuat"
 	
 	
 if __name__ == "__main__":
 	print("Spinning up  dispatcher.")
-	Pyro4.config.HOST = '10.151.62.36'
+	Pyro4.config.HOST = '10.151.43.75'
 	Pyro4.config.SERVERTYPE = "thread"
 	Pyro4.Daemon.serveSimple(
 		{
